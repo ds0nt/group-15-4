@@ -7,9 +7,10 @@ namespace StoreSim
 {
     class QSObserver
     {
+        public QueSystem queSystem; 
         public QSObserver(QueSystem sys)
         {
-
+            queSystem = sys;
         }
         public static void Update()
         {

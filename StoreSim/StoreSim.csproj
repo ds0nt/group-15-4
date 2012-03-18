@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cashier.cs" />
+    <Compile Include="QSObservable.cs" />
     <Compile Include="QueSystem.cs" />
     <Compile Include="QSObserver.cs" />
     <Compile Include="Store.cs" />

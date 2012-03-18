@@ -5,8 +5,7 @@ using System.Text;
 
 namespace StoreSim
 {
-    class Customer//: QSObserver
+    class QSObservable
     {
-        
     }
 }

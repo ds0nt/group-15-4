@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StoreSim
 {
-    class Cashier
+    class Cashier: QSObservable
     {
         public Cashier()
         {
