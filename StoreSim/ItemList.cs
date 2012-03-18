@@ -5,14 +5,20 @@ using System.Text;
 
 namespace StoreSim
 {
-    class ItemList
+    class Item
     {
         private int itemNum;
         private float price;
-        public ItemList()   //Item List constructor
+        public Item()   //Item List constructor
         {
             itemNum = 0;
             price = 0.0f;
+        }
+
+        public static List<Item> generateRandomItems()
+        {
+            List<Item> ret = new List<Item>();
+            return ret;
         }
     }
 }
