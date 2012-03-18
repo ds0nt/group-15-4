@@ -9,6 +9,7 @@ namespace StoreSim
     {
         static void Main(string[] args)
         {
+            new Store().simulate();
         }
     }
 }
