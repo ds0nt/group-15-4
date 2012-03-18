@@ -43,6 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cashier.cs" />
+    <Compile Include="QueSystem.cs" />
+    <Compile Include="QSObserver.cs" />
+    <Compile Include="Store.cs" />
+    <Compile Include="Customer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
