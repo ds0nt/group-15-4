@@ -43,11 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cashier.cs" />
+    <Compile Include="Manager.cs" />
+    <Compile Include="ServicePoint.cs" />
+    <Compile Include="ServicePointSystem.cs" />
+    <Compile Include="iSPObserver.cs" />
+    <Compile Include="iSPSObserver.cs" />
+    <Compile Include="StoreParams.cs" />
     <Compile Include="ItemList.cs" />
-    <Compile Include="QSObservable.cs" />
-    <Compile Include="QueSystem.cs" />
-    <Compile Include="QSObserver.cs" />
     <Compile Include="Store.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="Program.cs" />

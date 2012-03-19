@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StoreSim
 {
-    class QSObservable
+    class Manager
     {
     }
 }
