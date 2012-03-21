@@ -12,9 +12,14 @@ namespace StoreSim
 
         public ServicePointSystem()
         {
+            _observers = new List<iSPSObserver>();
+            _spList = new List<ServicePoint>();
+
             for (int i = 0; i < Store.Get().StoreParams.InitialServicePoints; i++)
             {
-
+                ServicePoint s = new ServicePoint();
+                _spList.Add(s);
+                s.Begin();
             }
         }
 
@@ -50,7 +55,7 @@ namespace StoreSim
         private void NotifyObservers()
         {
             foreach (iSPSObserver obs in _observers)
-                obs.onSPSUpdate();
+                obs.OnSPSUpdate();
         }
 
         //When a Service Point Updates

@@ -16,6 +16,9 @@ namespace StoreSim
 
         private ServicePoint _goToSP;
 
+        public double X { get; set; }
+        public double Y { get; set; }
+
         //Super Rhudimentary State Machine
         enum CustomerState
         {
@@ -89,24 +92,49 @@ namespace StoreSim
              }
         }
 
-        //Logic to go to our favorite SP given free SPs
-        private void _selectFavoriteSP(List<ServicePoint> sp)
+        private double _distanceToSP(ServicePoint s)
         {
+            double dx = s.X - X;
+            double dy = s.Y - Y;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+
+        //Logic to go to our favorite SP given free SPs
+        private ServicePoint _selectFavoriteSP(List<ServicePoint> sp)
+        {
+            ServicePoint favorite = null;
+            int leastItems = int.MaxValue;
+            double leastDistance = int.MaxValue;
             foreach (ServicePoint s in sp)
             {
-                //distance
-                float distance = Math.Sqrt
+                int items = s.GetQueuedItems();
+                if (items < leastItems || (items == leastItems))
+                {
+                    //if we have a tie for item count, choose based on distance
+
+                    double distance = _distanceToSP(s);
+                    if (items == leastItems)
+                    {
+                        if (distance >= leastDistance)
+                            continue;
+                    }
+                    leastItems = items;
+                    leastDistance = distance;
+                    favorite = s;
+                }
             }
+            return favorite;
         }
 
         public void OnSPSUpdate()
         {
             List<ServicePoint> sp = Store.Get().SPS.GetAvailableSP();
-            if (sp != null)
+            ServicePoint s = _selectFavoriteSP(sp);
+            if (s != null)
             {
-                lock (_goToSP)
+                lock (this)
                 {
-                    _goToSP = sp;
+                    _goToSP = s;
                 }
             }
         }
