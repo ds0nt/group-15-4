@@ -15,7 +15,7 @@ namespace StoreSim
         private ServicePointSystem _spm;
         private Queue<Customer> _mainQueue;
         private Manager _manager;
-
+        public static Random rand = new Random();
 
         public Manager Manager
         { 
@@ -36,7 +36,7 @@ namespace StoreSim
             get { return _mainQueue; }
         }
 
-        #endregion
+        #endregion 
         #region Constructor
         public Store(StoreParams sp)
         {
@@ -69,9 +69,13 @@ namespace StoreSim
         //Simulates the store over deltaTime
         public void Simulate(double deltaTimeMS)
         {
-            //Create customers based on probability over time
-
-            new Thread(new ThreadStart(new Customer().begin)).Start();
+            //Create customers based on probabilityyyy
+            double next = rand.NextDouble();
+            if (next < (_storeParams.CustomersPerMS * deltaTimeMS) )
+            {
+                new Thread(new ThreadStart(new Customer().Begin)).Start();
+                //System.Threading.Thread.Sleep(100000);
+            }
         }
     }
 }

@@ -11,5 +11,7 @@ namespace StoreSim
         public int MinimumServicePoints { get; set; } //C-04
         public int InitialServicePoints { get; set; } //C-11
         public int QueueMaxSize { get; set; } //C-12
+
+        public float CustomersPerMS{ get; set; }
     }
 }

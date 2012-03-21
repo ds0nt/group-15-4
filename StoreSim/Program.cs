@@ -32,7 +32,8 @@ namespace StoreSim
                 InitialServicePoints = 2,
                 MaximumServicePoints = 2,
                 MinimumServicePoints = 2,
-                QueueMaxSize = 2
+                QueueMaxSize = 2,
+                CustomersPerMS = 0.001f
             };
 
             Store store = new Store(sp);
@@ -40,8 +41,11 @@ namespace StoreSim
             DateTime lastTick = DateTime.Now;
             while (true)
             {
-                store.Simulate((lastTick - DateTime.Now).TotalMilliseconds);
+                store.Simulate((DateTime.Now - lastTick).TotalMilliseconds);
                 lastTick = DateTime.Now;
+            
+                //sleep it a bit to get a better sample from rand
+                System.Threading.Thread.Sleep(10); 
             }
         }
     }
