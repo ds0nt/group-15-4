@@ -52,5 +52,11 @@ namespace StoreSim
         {
             NotifyObservers();
         }
+
+        public ServicePoint getAvailableSP()
+        {
+            ServicePoint a = new ServicePoint();
+            return a;
+        }
     }
 }
