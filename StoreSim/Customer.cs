@@ -31,7 +31,7 @@ namespace StoreSim
             state = CustomerState.Shopping;
             _id = _lastId;
             _lastId++;
-            Program.debug("Customer Enters Store");
+            Program.Debug("Customer Enters Store");
 
             itemList = Item.GenerateRandomItems();
             shoppingCart = new List<Item>();
@@ -41,14 +41,14 @@ namespace StoreSim
         //main function of the customer
         public void Begin()
         {
-            Program.debug("_id: I have " + itemList.Count + " Items!");
+            Program.Debug("_id: I have " + itemList.Count + " Items!");
             while (true)
             {
-                processSelf();
+                ProcessSelf();
             }
         }
 
-        public void processSelf()
+        public void ProcessSelf()
         {
             switch (state)
             {
@@ -59,13 +59,13 @@ namespace StoreSim
                         Item found = itemList[Store.rand.Next(0, itemList.Count)];
                         itemList.RemoveAt(Store.rand.Next(0, itemList.Count));
                         shoppingCart.Add(found);
-                        Program.debug(found.ToString());
+                        Program.Debug(found.ToString());
                     }
                     System.Threading.Thread.Sleep(2000);
                     if (itemList.Count == 0)
                     {
                         state = CustomerState.MainQueue;
-                        Queue<Customer> l = Store.get().MainQueue;
+                        Queue<Customer> l = Store.Get().MainQueue;
                         lock (l)
                         {
                             l.Enqueue(this);
@@ -73,12 +73,14 @@ namespace StoreSim
                     }
                     break;
                 case CustomerState.MainQueue:
-                    if (Store.get().MainQueue.Peek() == this)
+                    if (Store.Get().MainQueue.Peek() == this)
                     {
                         //Try to go to service Point
-                        Console.WriteLine("IM AT THE FRONT BITCHES");
-                        
+                        Store.Get().SPS.RegisterObserver(this);
+                        //Pretend to update once
+                        OnSPSUpdate();
                     }
+                    System.Threading.Thread.Sleep(100);
                     break;
                 case CustomerState.ServicePointQueue:
                     break;
@@ -87,9 +89,19 @@ namespace StoreSim
              }
         }
 
-        public void onSPSUpdate()
+        //Logic to go to our favorite SP given free SPs
+        private void _selectFavoriteSP(List<ServicePoint> sp)
         {
-            ServicePoint sp = Store.get().SPS.getAvailableSP();
+            foreach (ServicePoint s in sp)
+            {
+                //distance
+                float distance = Math.Sqrt
+            }
+        }
+
+        public void OnSPSUpdate()
+        {
+            List<ServicePoint> sp = Store.Get().SPS.GetAvailableSP();
             if (sp != null)
             {
                 lock (_goToSP)

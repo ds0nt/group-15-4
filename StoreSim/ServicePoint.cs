@@ -13,6 +13,7 @@ namespace StoreSim
         //Observer pattern add observer
         public void RegisterObserver(iSPObserver obs)
         {
+            _queue = new Queue<Customer>();
             _observers.Add(obs);
         }
 
@@ -30,6 +31,12 @@ namespace StoreSim
         public void Begin()
         {
 
+        }
+
+        //Queue full?
+        public bool IsFull()
+        {
+            return _queue.Count >= Store.Get().StoreParams.QueueMaxSize;
         }
     }
 }

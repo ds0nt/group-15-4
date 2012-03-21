@@ -12,7 +12,7 @@ namespace StoreSim
 
         public ServicePointSystem()
         {
-            for (int i = 0; i < Store.get().StoreParams.InitialServicePoints; i++)
+            for (int i = 0; i < Store.Get().StoreParams.InitialServicePoints; i++)
             {
 
             }
@@ -20,12 +20,18 @@ namespace StoreSim
 
         public void RegisterObserver(iSPSObserver observer)
         {
-            _observers.Add(observer);
+            lock (_observers)
+            {
+                _observers.Add(observer);
+            }
         }
 
         public void UnregisterObserver(iSPSObserver observer)
         {
-            _observers.Remove(observer);
+            lock (_observers)
+            {
+                _observers.Remove(observer);
+            }
         }
 
         public void AddServicePoint(ServicePoint c)
@@ -48,14 +54,22 @@ namespace StoreSim
         }
 
         //When a Service Point Updates
-        public void onSPUpdate()
+        public void OnSPUpdate()
         {
             NotifyObservers();
         }
 
-        public ServicePoint getAvailableSP()
+        public List<ServicePoint> GetAvailableSP()
         {
-            ServicePoint a = new ServicePoint();
+            List<ServicePoint> a = new List<ServicePoint>();
+            lock (_spList)
+            {
+                foreach (ServicePoint s in _spList)
+                {
+                    if(!s.IsFull())
+                        a.Add(s);
+                }
+            }
             return a;
         }
     }

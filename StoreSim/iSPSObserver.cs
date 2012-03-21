@@ -7,6 +7,6 @@ namespace StoreSim
 {
     interface iSPSObserver
     {
-        void onSPSUpdate();
+        void OnSPSUpdate();
     }
 }

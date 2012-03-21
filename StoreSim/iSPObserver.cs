@@ -7,6 +7,6 @@ namespace StoreSim
 {
     interface iSPObserver
     {
-        void onSPUpdate();
+        void OnSPUpdate();
     }
 }

@@ -40,7 +40,7 @@ namespace StoreSim
         #region Constructor
         public Store(StoreParams sp)
         {
-            Program.debug("Creating Store...");
+            Program.Debug("Creating Store...");
             //Store params are the C-01 - C-12 variables
             _storeParams = sp;
             //Singleton Instance
@@ -57,7 +57,7 @@ namespace StoreSim
         }
 
         //Gets Singleton Instance of this class
-        public static Store get()
+        public static Store Get()
         {
             if (myInstance == null)
                 throw new NullReferenceException();

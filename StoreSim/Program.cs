@@ -12,7 +12,7 @@ namespace StoreSim
         static bool debugEnabled = true;
         static DateTime BeginTime = DateTime.Now;
 
-        public static void debug(object s)
+        public static void Debug(object s)
         {
             if (debugEnabled == false)
                 return;
