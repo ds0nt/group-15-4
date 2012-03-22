@@ -9,22 +9,66 @@ namespace StoreSim
     {
         private Queue<Customer> _queue;
         private List<iSPObserver> _observers;
+        private static int _lastID = 1;
+        public int ID;
         public double X { get; set; }
         public double Y { get; set; }
-        
+        private bool _opened;
+        public bool Opened { get { return _opened; } }
 
         public ServicePoint()
         {
+            _opened = false;
+            ID = _lastID;
+            _lastID++;
+
+            X = Store.rand.Next();
+            Y = Store.rand.Next();
+            
             _observers = new List<iSPObserver>();
             _queue = new Queue<Customer>();
+
+            Program.Debug("Service Point #" + ID + " -> Created");
         }
 
         //Start my Thread
-        public void Begin()
+        public void Open()
         {
+            Program.Debug("Service Point #" + ID + " -> Opened");
+            _opened = true;
 
+            Customer servee = null;
+            while (_opened)
+            {
+                if(_queue.Count > 0)
+                    servee = _queue.Peek();
+                while(servee != null)
+                {
+                    while (servee.shoppingCart.Count > 0)
+                    {
+                        System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToScan);
+                        lock (servee)
+                        {
+                            servee.purchasedItems.Add(servee.shoppingCart[0]);
+                            servee.shoppingCart.RemoveAt(0);
+                        }
+                    }
+                    System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToPurchase);
+                    _queue.Dequeue().LetExit();
+                    servee = null;
+                }
+                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeSP);
+            }
         }
-        
+
+        public void Close()
+        {
+            lock (this)
+            {
+                _opened = false;
+            }
+        }
+
         //count items in this queue, careful not to deadlock with customers calling this
         public int GetQueuedItems()
         {
@@ -53,6 +97,29 @@ namespace StoreSim
         public bool IsFull()
         {
             return _queue.Count >= Store.Get().StoreParams.QueueMaxSize;
+        }
+
+        private void _notify()
+        {
+            foreach (iSPObserver obs in _observers)
+            {
+                obs.OnSPUpdate();
+            }
+        }
+
+        public bool EnqueueCustomer(Customer c)
+        {
+            if (!IsFull())
+            {
+                lock (this)
+                {
+                    _queue.Enqueue(c);
+                    Program.Debug("Customer #" + c.ID + " -> SP #" + ID);
+                }
+                _notify();
+                return true;
+            }
+            return false;
         }
     }
 }

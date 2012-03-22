@@ -9,11 +9,13 @@ namespace StoreSim
     {
         public int ItemNum { get; set; }
         public double Price { get; set; }
-        public Item()   //Item List constructor
+        
+        public Item() 
         {
 
         }
 
+        //Creates a random Item
         private static Item RandomItem()
         {
             return new Item() { 
@@ -22,12 +24,13 @@ namespace StoreSim
             };
         }
 
+
+        //Creates A bunch of random items
         public static List<Item> GenerateRandomItems()
         {
             List<Item> ret = new List<Item>();
             
-            //Parabolic Probability
-            int itemCount = Store.rand.Next(1, 5) * Store.rand.Next(1, 5);
+            int itemCount = Store.rand.Next(Store.Get().StoreParams.RandomItemMin, Store.Get().StoreParams.RandomItemMax);
             for (int i = 0; i < itemCount; i++)
                 ret.Add(RandomItem());
 
