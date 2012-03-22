@@ -23,11 +23,9 @@ namespace StoreSim
             {
                 //Calculate Time based on TimeScale (Simulation Speed)
                 TimeSpan delta = DateTime.Now - BeginTime;
+                
                 delta = new TimeSpan((long)(delta.Ticks * Store.Get().StoreParams.TimeScale));
-                Console.WriteLine(
-                    delta.Hours + ":" +
-                    delta.Minutes + ":" +
-                    delta.Seconds + ":" + s);
+                Console.WriteLine(delta.ToString() + " -- " + s);
             }
             catch (NullReferenceException) // Store Not yet Created
             {
@@ -44,13 +42,13 @@ namespace StoreSim
                 InitialServicePoints = 2,
                 MaximumServicePoints = 2,
                 MinimumServicePoints = 2,
-                QueueMaxSize = 2,
+                QueueMaxSize = 3,
 
                 TimeScale = 20,
                 TimeToBrowsePerItem = 120000,
                 TimeToPurchase = 10000,
                 TimeToScan = 2000,
-                TimeToExitStore = 1000,
+                TimeToExitStore = 0,
                 ReactionTimeCustomer = 100,
                 ReactionTimeSP = 100,
                 
@@ -65,17 +63,16 @@ namespace StoreSim
             
             //Preset Simulation
             //Yay.
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            new Customer(1, 10000);
-            
-            
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(2, 0);
+            new Customer(3, 0);
+            new Customer(3, 0);
             return;
 
             DateTime lastTick = DateTime.Now;
