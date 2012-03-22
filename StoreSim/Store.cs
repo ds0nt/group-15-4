@@ -69,12 +69,10 @@ namespace StoreSim
         //Simulates the store over deltaTime
         public void Simulate(double deltaTimeMS)
         {
-            //Create customers based on probabilityyyy
             double next = rand.NextDouble();
             if (next < (_storeParams.RandomCustomerGenRate * deltaTimeMS))
             {
-                new Thread(new ThreadStart(new Customer().Begin)).Start();
-                //System.Threading.Thread.Sleep(100000);
+                new Customer();
             }
         }
     }

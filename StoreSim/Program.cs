@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 namespace StoreSim
 {
     
@@ -47,7 +47,7 @@ namespace StoreSim
                 QueueMaxSize = 2,
 
                 TimeScale = 20,
-                TimeToBrowsePerItem = 180000,
+                TimeToBrowsePerItem = 120000,
                 TimeToPurchase = 10000,
                 TimeToScan = 2000,
                 TimeToExitStore = 1000,
@@ -61,6 +61,22 @@ namespace StoreSim
             };
 
             Store store = new Store(sp);
+
+            
+            //Preset Simulation
+            //Yay.
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            new Customer(1, 10000);
+            
+            
+            return;
 
             DateTime lastTick = DateTime.Now;
             while (true)

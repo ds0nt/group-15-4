@@ -26,12 +26,14 @@ namespace StoreSim
 
 
         //Creates A bunch of random items
-        public static List<Item> GenerateRandomItems()
+        public static List<Item> GenerateRandomItems(int items = 0)
         {
             List<Item> ret = new List<Item>();
             
-            int itemCount = Store.rand.Next(Store.Get().StoreParams.RandomItemMin, Store.Get().StoreParams.RandomItemMax);
-            for (int i = 0; i < itemCount; i++)
+            if(items == 0)
+                items = Store.rand.Next(Store.Get().StoreParams.RandomItemMin, Store.Get().StoreParams.RandomItemMax);
+
+            for (int i = 0; i < items; i++)
                 ret.Add(RandomItem());
 
             return ret;

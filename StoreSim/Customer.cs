@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace StoreSim
 {
@@ -24,6 +25,8 @@ namespace StoreSim
         private int _id;
         public int ID { get { return _id; }}
 
+        private int _delay = 0;
+
         //Super Rhudimentary State Machine
         enum CustomerState
         {
@@ -35,20 +38,25 @@ namespace StoreSim
         };
         CustomerState state;
 
-        public Customer()
+        public Customer(int items = 0, int delay = 0)
         {
             state = CustomerState.Shopping;
             _id = _lastId;
             _lastId++;
+            
+            itemList = Item.GenerateRandomItems(items);
 
-            itemList = Item.GenerateRandomItems();
             shoppingCart = new List<Item>();
             purchasedItems = new List<Item>();
+
+            _delay = delay;
+            new Thread(new ThreadStart(this.Begin)).Start();
         }
 
         //main function of the customer
         public void Begin()
         {
+            Thread.Sleep((int)(_delay / Store.Get().StoreParams.TimeScale));
             Program.Debug("Customer #" + ID + " (wants " + itemList.Count + " items) -> Browsing Store");
             while (true)
             {
@@ -153,7 +161,6 @@ namespace StoreSim
                 if (items < leastItems || (items == leastItems))
                 {
                     //if we have a tie for item count, choose based on distance
-
                     double distance = _distanceToSP(s);
                     if (items == leastItems)
                     {

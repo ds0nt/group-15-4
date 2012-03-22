@@ -20,7 +20,7 @@ namespace StoreSim
             {
                 ServicePoint s = new ServicePoint();
                 _spList.Add(s);
-
+                s.RegisterObserver(this);
                 new Thread(new ThreadStart(s.Open)).Start();
             }
         }
@@ -63,10 +63,6 @@ namespace StoreSim
         //When a Service Point Updates
         public void OnSPUpdate()
         {
-            foreach (ServicePoint sp in _spList)
-            {
-                Console.WriteLine(sp.IsFull());
-            }
             NotifyObservers();
         }
 

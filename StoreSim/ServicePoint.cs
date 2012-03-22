@@ -55,6 +55,7 @@ namespace StoreSim
                     }
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToPurchase);
                     _queue.Dequeue().LetExit();
+                    _notify();
                     servee = null;
                 }
                 System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeSP);
