@@ -36,20 +36,25 @@ namespace StoreSim
             ServicePointQueue, // waiting for people in front of him
             Exiting, //scanning items
         };
+        public struct CustomerStart
+        {
+            public int items;
+            public int delay;
+        };
         CustomerState state;
 
-        public Customer(int items = 0, int delay = 0)
+        public Customer(CustomerStart c)
         {
             state = CustomerState.Shopping;
             _id = _lastId;
             _lastId++;
             
-            itemList = Item.GenerateRandomItems(items);
+            itemList = Item.GenerateRandomItems(c.items);
 
             shoppingCart = new List<Item>();
             purchasedItems = new List<Item>();
 
-            _delay = delay;
+            _delay = c.delay;
             new Thread(new ThreadStart(this.Begin)).Start();
         }
 
@@ -196,6 +201,17 @@ namespace StoreSim
             {
                 state = CustomerState.Exiting;
             }
+        }
+
+        public static CustomerStart CreateFromSim(string l)
+        {
+            string itemstr = l.Substring(0, l.IndexOf(';'));
+            string delaystr = l.Substring(l.IndexOf(';')+1);
+
+            CustomerStart c;
+            c.items = int.Parse(itemstr);
+            c.delay = int.Parse(delaystr);
+            return c;
         }
     }
 }

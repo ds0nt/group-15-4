@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StoreSim
 {
-    struct StoreParams
+    class StoreParams
     {
         public int MaximumServicePoints { get; set; } //C-01
         public int MinimumServicePoints { get; set; } //C-04
@@ -61,5 +61,36 @@ namespace StoreSim
         public int RandomItemMin { get; set; }
 
         public int RandomItemMax { get; set; }
+        
+        public static StoreParams createFromSettings(string settings)
+        {
+            //do awesome things with reflection
+            StoreParams sp = new StoreParams();
+            string[] clauses = settings.Replace("\n", "").Replace(" ", "").Replace("\r", "").Split(';');
+            foreach (string clause in clauses)
+            {
+                if (clause.Equals(""))
+                    continue;
+                string key = clause.Substring(0, clause.IndexOf("="));
+                string value = clause.Substring(clause.IndexOf("=") + 1);
+                if (key.Equals("") || value.Equals(""))
+                    continue;
+                int intval;
+                float floatval;
+                if (value.ToLower().Equals("true"))
+                    sp.GetType().GetProperty(key).SetValue(sp, true, null);
+                else if (value.ToLower().Equals("false"))
+                    sp.GetType().GetProperty(key).SetValue(sp, false, null);
+                else if (int.TryParse(value, out intval))
+                    sp.GetType().GetProperty(key).SetValue(sp, intval, null);
+                else if (float.TryParse(value, out floatval))
+                    sp.GetType().GetProperty(key).SetValue(sp, floatval, null);
+                else 
+                    sp.GetType().GetProperty(key).SetValue(sp, value, null);
+                
+                
+            }
+            return sp;
+        }
     }
 }

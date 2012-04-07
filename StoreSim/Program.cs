@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.IO;
+using System.Windows.Forms;
 namespace StoreSim
 {
-    
-    class Program
+    static class Program
     {
-
         static bool debugEnabled = true;
         static DateTime BeginTime = DateTime.Now;
-
-
+        public static Exception lastException = null;
         //Logging Ability
         public static void Debug(object s)
         {
@@ -33,57 +32,62 @@ namespace StoreSim
             }
         }
 
-        static void Main(string[] args)
+        public static Customer.CustomerStart[] readSimulation(Stream stream)
         {
-            //Initialize Input Variables
-            //Further Documentation in StoreParams Class
-            StoreParams sp = new StoreParams()
+            List<Customer.CustomerStart> cs = new List<Customer.CustomerStart>();
+            try
             {
-                InitialServicePoints = 2,
-                MaximumServicePoints = 2,
-                MinimumServicePoints = 2,
-                QueueMaxSize = 3,
+                StreamReader f = new StreamReader(stream);
+                while (!f.EndOfStream)
+                {
+                    string l = f.ReadLine();
+                    cs.Add(Customer.CreateFromSim(l));
+                }
+                return cs.ToArray();
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+            }
+            return null;
+        }
+        public static StoreParams readSettings(Stream stream)
+        {
+            try
+            {
+                StreamReader f = new StreamReader(stream);
+                string settings = f.ReadToEnd();
+                f.Close();
+                StoreParams sp = StoreParams.createFromSettings(settings);
+                return sp;    
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+            }
+            return null;
+        }
 
-                TimeScale = 20,
-                TimeToBrowsePerItem = 120000,
-                TimeToPurchase = 10000,
-                TimeToScan = 2000,
-                TimeToExitStore = 0,
-                ReactionTimeCustomer = 100,
-                ReactionTimeSP = 100,
-                
-                RandomCustomerGenRate = 0.001f, //Lower is fewer, 0 is none.
-                RandomItemGeneration = false,
-                RandomItemMin = 1,
-                RandomItemMax = 3
-            };
+        public static void randomSimulation(StoreParams sp)
+        {
 
             Store store = new Store(sp);
-
-            
-            //Preset Simulation
-            //Yay.
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(2, 0);
-            new Customer(3, 0);
-            new Customer(3, 0);
-            return;
-
             DateTime lastTick = DateTime.Now;
             while (true)
             {
                 store.Simulate((DateTime.Now - lastTick).TotalMilliseconds);
                 lastTick = DateTime.Now;
-            
+
                 //sleep it a bit to get a better sample from rand
-                System.Threading.Thread.Sleep(10); 
+                System.Threading.Thread.Sleep(10);
             }
         }
+
+        [STAThread]
+        static void Main(string[] args)
+        {
+            Application.Run(new GUI.StoreForm());
+        }
+
     }
 }

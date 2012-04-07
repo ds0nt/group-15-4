@@ -69,11 +69,11 @@ namespace StoreSim
         //Simulates the store over deltaTime
         public void Simulate(double deltaTimeMS)
         {
-            double next = rand.NextDouble();
-            if (next < (_storeParams.RandomCustomerGenRate * deltaTimeMS))
-            {
-                new Customer();
-            }
+            //double next = rand.NextDouble();
+            //if (next < (_storeParams.RandomCustomerGenRate * deltaTimeMS))
+            //{
+            //    new Customer();
+            //}
         }
     }
 }

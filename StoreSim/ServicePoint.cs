@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading;
 namespace StoreSim
 {
     class ServicePoint
@@ -31,7 +31,13 @@ namespace StoreSim
             Program.Debug("Service Point #" + ID + " -> Created");
         }
 
-        //Start my Thread
+        //Thread Begin
+        public void Start()
+        {
+            new Thread(new ThreadStart(this.Open)).Start();
+        }
+
+        //Thread Loop
         public void Open()
         {
             Program.Debug("Service Point #" + ID + " -> Opened");
