@@ -12,6 +12,8 @@ namespace StoreSim
         static bool debugEnabled = true;
         static DateTime BeginTime = DateTime.Now;
         public static Exception lastException = null;
+        static StringBuilder log = new StringBuilder();
+
         //Logging Ability
         public static void Debug(object s)
         {
@@ -24,11 +26,31 @@ namespace StoreSim
                 TimeSpan delta = DateTime.Now - BeginTime;
                 
                 delta = new TimeSpan((long)(delta.Ticks * Store.Get().StoreParams.TimeScale));
-                Console.WriteLine(delta.ToString() + " -- " + s);
+                string line = delta.ToString() + " -- " + s;
+                Console.WriteLine(line);
+                log.AppendLine(line);
             }
             catch (NullReferenceException) // Store Not yet Created
             {
                 Console.WriteLine(s);
+            }
+        }
+
+        public static bool saveLog(Stream stream)
+        {
+            try
+            {
+                StreamWriter f = new StreamWriter(stream);
+                f.Write(log.ToString());
+                f.Flush();
+                log = new StringBuilder();
+                return true;
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+                log = new StringBuilder();
+                return false;
             }
         }
 
@@ -48,8 +70,8 @@ namespace StoreSim
             catch (Exception e)
             {
                 lastException = e;
+                return null;
             }
-            return null;
         }
         public static StoreParams readSettings(Stream stream)
         {
@@ -64,8 +86,8 @@ namespace StoreSim
             catch (Exception e)
             {
                 lastException = e;
+                return null;
             }
-            return null;
         }
 
         public static void randomSimulation(StoreParams sp)
@@ -89,5 +111,24 @@ namespace StoreSim
             Application.Run(new GUI.StoreForm());
         }
 
+
+        public static bool writeSettings(StoreParams sp, Stream stream)
+        {
+            try
+            {
+                StreamWriter f = new StreamWriter(stream);
+                foreach (System.Reflection.PropertyInfo pi in sp.GetType().GetProperties())
+                {
+                    f.Write(pi.Name + " = " + pi.GetValue(sp, null) + ";\n\r");
+                }
+                f.Flush();
+                return true;
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+                return false;
+            }
+        }
     }
 }

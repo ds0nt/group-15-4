@@ -44,7 +44,7 @@ namespace StoreSim
             _opened = true;
 
             Customer servee = null;
-            while (_opened)
+            while (_opened || _queue.Count > 0)
             {
                 if(_queue.Count > 0)
                     servee = _queue.Peek();
@@ -116,7 +116,7 @@ namespace StoreSim
 
         public bool EnqueueCustomer(Customer c)
         {
-            if (!IsFull())
+            if ( _opened &&!IsFull())
             {
                 lock (this)
                 {
