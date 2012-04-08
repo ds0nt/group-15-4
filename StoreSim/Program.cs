@@ -130,5 +130,24 @@ namespace StoreSim
                 return false;
             }
         }
+
+        public static bool writeSim(Customer.CustomerStart[] simCustomers, Stream stream)
+        {
+            try
+            {
+                StreamWriter f = new StreamWriter(stream);
+                foreach (Customer.CustomerStart cs in simCustomers)
+                {
+                    f.WriteLine(cs.items + ";" + cs.delay);
+                }
+                f.Flush();
+                return true;
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+                return false;
+            }
+        }
     }
 }
