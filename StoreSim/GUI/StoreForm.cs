@@ -82,7 +82,10 @@ namespace StoreSim.GUI
 
         private void simDetails_Click(object sender, EventArgs e)
         {
-            //SimDetails simForm = new SimDetails(simCustomers);
+            SimDetails iniForm = new SimDetails(simCustomers);
+            DialogResult res = iniForm.ShowDialog(this);
+            if (iniForm.appliedsimCustomers != null)
+                simCustomers = iniForm.appliedsimCustomers;
         }
 
         private void iniDetails_Click(object sender, EventArgs e)
