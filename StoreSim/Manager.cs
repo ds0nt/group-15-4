@@ -25,6 +25,7 @@ namespace StoreSim
             maxNumberCashier = Store.Get().StoreParams.MaximumServicePoints;
 
             new Thread(new ThreadStart(this.Begin)).Start();
+            Store.Get().SPS.RegisterObserver(this); //Manager needs to be registerd here too!!
         }
 
         public void Begin()
@@ -57,17 +58,16 @@ namespace StoreSim
                         //Open up the store
                         state = ManagerState.OpeningStore;
                         // -- Start observing the Service Points
-                        Store.Get().SPS.RegisterObserver(this); //Manager needs to be registerd here too!!
                         //Check what's going on there.
                         AdjustNumberOfCashier(); //this is meaningless but u kno, just for fun.
                     }
                     else //the case the store is already opened!
                     {                                           //*****************************************************
-                        if (Store.Get().CustomerPool.Count > 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
-                            state = ManagerState.ManagingCashier;//******************************************************** 
+                        //if (Store.Get().CustomerPool.Count > 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
+                        state = ManagerState.ManagingCashier;//******************************************************** 
                         //If there is more than 5 ppl in the store.
-                        else
-                            state = ManagerState.Thinking;
+                        //else
+                            //state = ManagerState.Thinking;
                             //state = ManagerState.ClosingStore;
                     }
                     break;
@@ -86,52 +86,45 @@ namespace StoreSim
                     break;
             }
         }
+
+        bool outOfDate = false;
         public void OnSPSUpdate()
         {
+            outOfDate = true;
         }
 
         public void AdjustNumberOfCashier()
         {
-            List<ServicePoint> sp = Store.Get().SPS.GetAvailableSP(); //get all the available SPs.
+            List<ServicePoint> sp = Store.Get().SPS.GetServicePoints();//get all the available SPs.
 
             //ServicePoint s = _selectFavoriteSP(sp);
             if (_needToAdjust(sp) == "increase" && sp.Count < Store.Get().StoreParams.MaximumServicePoints)
             {
-                ServicePoint newServicePoint = new ServicePoint();
-                lock (this)
+                lock (Store.Get().SPS)
                 {
-                    lock (Store.Get().SPS)
-                    {
-                        Program.Debug("************************************************CASHIER ++ **********");
-                        Store.Get().SPS.AddServicePoint(newServicePoint);
-                    }
+                    Program.Debug("************************************************CASHIER ++ **********");
+                    Store.Get().SPS.AddServicePoint();
                 }
             }
             else if(_needToAdjust(sp) == "decrease" && sp.Count > Store.Get().StoreParams.MinimumServicePoints)
             {
-                ServicePoint leastAmountCashier = new ServicePoint();
+                ServicePoint leastAmountCashier = null;
            
-                lock (this)
+                //look for the least amount
+                for (int i = 0; i < sp.Count; i++)
                 {
-                    //look for the least amount
-                    for (int i = 0; i < sp.Count; i++)
+                    if (i == 0)
+                        leastAmountCashier = sp.ElementAt(0);
+                    else
                     {
-                        if (i == 0)
-                            leastAmountCashier = sp.ElementAt(0);
+                        if (sp.ElementAt(i - 1).GetNumberOfCustomers() > sp.ElementAt(i).GetNumberOfCustomers())
+                            leastAmountCashier = sp.ElementAt(i);
                         else
-                        {
-                            if (sp.ElementAt(i - 1).GetNumberOfCustomers() > sp.ElementAt(i).GetNumberOfCustomers())
-                                leastAmountCashier = sp.ElementAt(i);
-                            else
-                                leastAmountCashier = sp.ElementAt(i - 1);
-                        }
-                    }
-                    lock (leastAmountCashier)
-                    {
-                        Program.Debug("--------------------------------------------- DECREASED!!");
-                        Store.Get().SPS.CloseServicePoint(leastAmountCashier);
+                            leastAmountCashier = sp.ElementAt(i - 1);
                     }
                 }
+                if(leastAmountCashier != null)
+                    Store.Get().SPS.CloseServicePoint(leastAmountCashier);
             }
             else if (_needToAdjust(sp) == "nothing")
             {

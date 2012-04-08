@@ -11,6 +11,12 @@ namespace StoreSim
         private List<ServicePoint> _spList;
         private List<iSPSObserver> _observers;
 
+        public List<ServicePoint> GetServicePoints()
+        {
+            return _spList;
+        }
+
+
         public ServicePointSystem()
         {
             _observers = new List<iSPSObserver>();
@@ -41,14 +47,18 @@ namespace StoreSim
             }
         }
 
-        public void AddServicePoint(ServicePoint c)
+        public void AddServicePoint()
         {
-            _spList.Add(c);
+            ServicePoint s = new ServicePoint();
+            _spList.Add(s);
+            s.RegisterObserver(this);
+            s.Start();
             NotifyObservers();
         }
 
         public void CloseServicePoint(ServicePoint p)
         {
+            p.Close();
             _spList.Remove(p);
             NotifyObservers();
         }
