@@ -149,15 +149,14 @@ namespace StoreSim
 
                 case CustomerState.Exiting:
                     //Bye Bye Store
+                    Program.Debug("Customer #" + ID + " -> Finished Paying");
+                    System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToExitStore);
                     lock (Store.Get().CustomerPool)
                     {
                         Store.Get().CustomerPool.Remove(this);
-                        Program.Debug("customer in store count = " + Store.Get().CustomerPool.Count);
                     }
-
-                    Program.Debug("Customer #" + ID + " -> Finished Paying");
-                    System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToExitStore);
                     Program.Debug("Customer #" + ID + " -> Exited Store");
+                    Program.Debug("customer in store count = " + Store.Get().CustomerPool.Count);
                     return false;
              }
             return true;

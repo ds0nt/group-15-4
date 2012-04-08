@@ -9,39 +9,26 @@ namespace StoreSim
     class Manager : iSPSObserver
     {
         public int maxNumberCashier;
-        public int currentAvailableCashier;
-
 
         enum ManagerState
         {
             TakingBreak,
             Thinking, // Doing nothing but collects information to decide what to do 
             OpeningStore, // Opening Store
-            ManagingCashier, //Closing Cashier
+            ManagingCashier, //Managing Cashier
             ClosingStore, // Closing Store
         };
-        //public struct ManagerStart
-        //{
-         //   public int maxNumberCashier;
-            //public int delay;
-        //};
         ManagerState state;
         public Manager()
         {
             state = ManagerState.TakingBreak;
             maxNumberCashier = Store.Get().StoreParams.MaximumServicePoints;
 
-
-
-
-
-
             new Thread(new ThreadStart(this.Begin)).Start();
         }
 
         public void Begin()
         {
-            //Thread.Sleep((int)(_delay / Store.Get().StoreParams.TimeScale));
             Program.Debug("Manager is Created.");
             while (true)
             {
@@ -57,10 +44,11 @@ namespace StoreSim
                     //Wait for Finding Item
                     Program.Debug("MANAGER IS TAKING REST!!!");
                     System.Threading.Thread.Sleep(10000); ///////////////////////////////////
-                    state = ManagerState.OpeningStore;
+                    state = ManagerState.Thinking;
                     break;
                 case ManagerState.OpeningStore:
                     Store.Get().open = true;
+                    state = ManagerState.Thinking;
                     break;
                 case ManagerState.Thinking:
                     //Think what to do
@@ -71,19 +59,21 @@ namespace StoreSim
                         // -- Start observing the Service Points
                         Store.Get().SPS.RegisterObserver(this); //Manager needs to be registerd here too!!
                         //Check what's going on there.
-                        OnSPSUpdate(); //this is meaningless but u kno, just for fun.
+                        AdjustNumberOfCashier(); //this is meaningless but u kno, just for fun.
                     }
                     else //the case the store is already opened!
                     {                                           //*****************************************************
                         if (Store.Get().CustomerPool.Count > 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
                             state = ManagerState.ManagingCashier;//******************************************************** 
-                                                                //If there is more than 5 ppl in the store.
+                        //If there is more than 5 ppl in the store.
                         else
-                            state = ManagerState.ClosingStore;
+                            state = ManagerState.Thinking;
+                            //state = ManagerState.ClosingStore;
                     }
                     break;
                 case ManagerState.ManagingCashier:
-                    OnSPSUpdate();
+                    AdjustNumberOfCashier();
+                    System.Threading.Thread.Sleep(10000);
                     state = ManagerState.Thinking;
                     break;
                 case ManagerState.ClosingStore:
@@ -96,13 +86,16 @@ namespace StoreSim
                     break;
             }
         }
-
         public void OnSPSUpdate()
+        {
+        }
+
+        public void AdjustNumberOfCashier()
         {
             List<ServicePoint> sp = Store.Get().SPS.GetAvailableSP(); //get all the available SPs.
 
             //ServicePoint s = _selectFavoriteSP(sp);
-            if (_needToAdjust(sp) == "increase")
+            if (_needToAdjust(sp) == "increase" && sp.Count < Store.Get().StoreParams.MaximumServicePoints)
             {
                 ServicePoint newServicePoint = new ServicePoint();
                 lock (this)
@@ -114,7 +107,7 @@ namespace StoreSim
                     }
                 }
             }
-            else if(_needToAdjust(sp) == "decrease")
+            else if(_needToAdjust(sp) == "decrease" && sp.Count > Store.Get().StoreParams.MinimumServicePoints)
             {
                 ServicePoint leastAmountCashier = new ServicePoint();
            
@@ -145,20 +138,22 @@ namespace StoreSim
                 //need to increase the stress point by 1.
             }
         }
+
         public string _needToAdjust(List<ServicePoint> servicePoints)
         {
             //Actually, here it adjusts. Add/remove service points
-            int averageNumberOfCustomer = 0;
+            /*int averageNumberOfCustomer = 0;
             for (int i = 0; i < servicePoints.Count; i++)
             {
                 averageNumberOfCustomer += servicePoints.ElementAt(i).GetNumberOfCustomers();
             }
             averageNumberOfCustomer /= servicePoints.Count;
+            */
 
 
-            if (averageNumberOfCustomer >2) /////////////////////////////*************************************Add value here!!
+            if (Store.Get().MainQueue.Count >4) /////////////////////////////*************************************Add value here!!
                 return "increase"; ////////////////////////////////////2 is wrong****************************************
-            else if ((averageNumberOfCustomer <2) && (servicePoints.Count > Store.Get().StoreParams.MinimumServicePoints))
+            else if (Store.Get().MainQueue.Count < 3)
                 return "decrease";
             else
                 return "nothing";
