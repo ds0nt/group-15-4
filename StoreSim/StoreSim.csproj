@@ -83,6 +83,9 @@
     <EmbeddedResource Include="GUI\INIDetails.resx">
       <DependentUpon>INIDetails.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SimDetails.resx">
+      <DependentUpon>SimDetails.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\StoreForm.resx">
       <DependentUpon>StoreForm.cs</DependentUpon>
     </EmbeddedResource>

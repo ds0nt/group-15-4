@@ -66,8 +66,12 @@ namespace StoreSim
         //Observer Pattern Notify Observers (Customers)
         private void NotifyObservers()
         {
-            foreach (iSPSObserver obs in _observers)
-                obs.OnSPSUpdate();
+            lock (_observers)
+            {
+                foreach (iSPSObserver obs in _observers)
+                    if(obs != null)
+                        obs.OnSPSUpdate();
+            }
         }
 
         //When a Service Point Updates
