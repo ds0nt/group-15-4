@@ -116,7 +116,7 @@ namespace StoreSim
 
         public bool EnqueueCustomer(Customer c)
         {
-            if (!IsFull() && _opened)
+            if ( _opened &&!IsFull())
             {
                 lock (this)
                 {

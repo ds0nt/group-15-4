@@ -45,6 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUI\INIDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\INIDetails.Designer.cs">
+      <DependentUpon>INIDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\SimDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\SimDetails.Designer.cs">
+      <DependentUpon>SimDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\StoreForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +80,9 @@
     <None Include="settings.ini" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GUI\INIDetails.resx">
+      <DependentUpon>INIDetails.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\StoreForm.resx">
       <DependentUpon>StoreForm.cs</DependentUpon>
     </EmbeddedResource>

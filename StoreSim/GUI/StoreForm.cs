@@ -32,7 +32,9 @@ namespace StoreSim.GUI
             DialogResult result = openFileDialog.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
-                simCustomers = Program.readSimulation(openFileDialog.OpenFile());
+                System.IO.Stream fs = openFileDialog.OpenFile();
+                simCustomers = Program.readSimulation(fs);
+                fs.Close();
                 simDetails.Enabled = simCustomers != null;
                 if (simCustomers != null)
                 {
@@ -53,7 +55,9 @@ namespace StoreSim.GUI
             DialogResult result = openFileDialog.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
-                sp = Program.readSettings(openFileDialog.OpenFile());
+                System.IO.Stream fs = openFileDialog.OpenFile();
+                sp = Program.readSettings(fs);
+                fs.Close();
                 iniDetails.Enabled = sp != null;
                 if (sp != null)
                 {
@@ -78,12 +82,15 @@ namespace StoreSim.GUI
 
         private void simDetails_Click(object sender, EventArgs e)
         {
-
+            //SimDetails simForm = new SimDetails(simCustomers);
         }
 
         private void iniDetails_Click(object sender, EventArgs e)
         {
-
+            INIDetails iniForm = new INIDetails(sp);
+            DialogResult res = iniForm.ShowDialog(this);
+            if (iniForm.appliedSP != null)
+                sp = iniForm.appliedSP;
         }
     }
 }
