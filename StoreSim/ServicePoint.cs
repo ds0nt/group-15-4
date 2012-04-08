@@ -36,7 +36,7 @@ namespace StoreSim
         {
             new Thread(new ThreadStart(this.Open)).Start();
         }
-
+        
         //Thread Loop
         public void Open()
         {
@@ -44,7 +44,7 @@ namespace StoreSim
             _opened = true;
 
             Customer servee = null;
-            while (_opened)
+            while (_opened || _queue.Count > 0)
             {
                 if(_queue.Count > 0)
                     servee = _queue.Peek();
@@ -116,7 +116,7 @@ namespace StoreSim
 
         public bool EnqueueCustomer(Customer c)
         {
-            if (!IsFull())
+            if (!IsFull() && _opened)
             {
                 lock (this)
                 {
@@ -127,6 +127,11 @@ namespace StoreSim
                 return true;
             }
             return false;
+        }
+
+        public int GetNumberOfCustomers()
+        {
+            return _queue.Count;
         }
     }
 }

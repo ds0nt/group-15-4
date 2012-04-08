@@ -62,7 +62,18 @@ namespace StoreSim
         public void Begin()
         {
             Thread.Sleep((int)(_delay / Store.Get().StoreParams.TimeScale));
+            while (Store.Get().open == false)
+            {
+                //Program.Debug("Customer #" + ID + " wants to get in but STORE IS CLOSED!!!!!!!!!!!!!!!");
+            }
             Program.Debug("Customer #" + ID + " (wants " + itemList.Count + " items) -> Browsing Store");
+            List<Customer> cp = Store.Get().CustomerPool;
+            lock (cp)
+            {
+                if (cp.Contains(this) == false)
+                    cp.Add(this);
+                Program.Debug("customer in store count = " + cp.Count);
+            }
             while (true)
             {
                 if (!ProcessSelf())
@@ -138,6 +149,12 @@ namespace StoreSim
 
                 case CustomerState.Exiting:
                     //Bye Bye Store
+                    lock (Store.Get().CustomerPool)
+                    {
+                        Store.Get().CustomerPool.Remove(this);
+                        Program.Debug("customer in store count = " + Store.Get().CustomerPool.Count);
+                    }
+
                     Program.Debug("Customer #" + ID + " -> Finished Paying");
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToExitStore);
                     Program.Debug("Customer #" + ID + " -> Exited Store");

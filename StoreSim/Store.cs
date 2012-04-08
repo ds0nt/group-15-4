@@ -10,10 +10,11 @@ namespace StoreSim
     {
         #region Variables
         private static Store myInstance;
-        
+        public bool open { get; set; }
         private StoreParams _storeParams;
         private ServicePointSystem _spm;
         private Queue<Customer> _mainQueue;
+        private List<Customer> _customerPool; ///list of customers 
         private Manager _manager;
         public static Random rand = new Random();
 
@@ -35,6 +36,10 @@ namespace StoreSim
         {
             get { return _mainQueue; }
         }
+        public List<Customer> CustomerPool
+        {
+            get { return _customerPool; }
+        }
 
         #endregion 
         #region Constructor
@@ -43,6 +48,8 @@ namespace StoreSim
             Program.Debug("Creating Store...");
             //Store params are the C-01 - C-12 variables
             _storeParams = sp;
+
+            open = false;
             //Singleton Instance
             myInstance = this;
 
@@ -51,6 +58,9 @@ namespace StoreSim
 
             //Main Customer Queue
             _mainQueue = new Queue<Customer>();
+
+            //customer pool
+            _customerPool = new List<Customer>();
 
             //Manager
             _manager = new Manager();
@@ -65,6 +75,12 @@ namespace StoreSim
             return myInstance;
         }
         #endregion
+
+        /*
+        public int GetNumberOfCustomer()
+        {
+            return CustomerPool.Count;
+        }*/
 
         //Simulates the store over deltaTime
         public void Simulate(double deltaTimeMS)
