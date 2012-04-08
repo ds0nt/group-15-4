@@ -70,10 +70,7 @@ namespace StoreSim
 
         public void Close()
         {
-            lock (this)
-            {
-                _opened = false;
-            }
+            _opened = false;
         }
 
         //count items in this queue, careful not to deadlock with customers calling this
@@ -90,7 +87,6 @@ namespace StoreSim
         //Observer pattern add observer
         public void RegisterObserver(iSPObserver obs)
         {
-            _queue = new Queue<Customer>();
             _observers.Add(obs);
         }
 
@@ -116,7 +112,7 @@ namespace StoreSim
 
         public bool EnqueueCustomer(Customer c)
         {
-            if ( _opened &&!IsFull())
+            if (_opened && !IsFull())
             {
                 lock (this)
                 {

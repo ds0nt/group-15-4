@@ -92,5 +92,25 @@ namespace StoreSim.GUI
             if (iniForm.appliedSP != null)
                 sp = iniForm.appliedSP;
         }
+
+        private void saveLog_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.DefaultExt = "ini";
+
+            DialogResult result = saveFileDialog1.ShowDialog(); // Show the dialog.
+            if (result == DialogResult.OK) // Test result.
+            {
+                System.IO.Stream fs = saveFileDialog1.OpenFile();
+                bool success = Program.saveLog(fs);
+                fs.Close();
+                if (success)
+                {
+                }
+                else
+                {
+                    MessageBox.Show(Program.lastException.Message);
+                }
+            }
+        }
     }
 }

@@ -113,19 +113,24 @@ namespace StoreSim
                 case CustomerState.FrontOfMainQueue:
                     // _goToSP will be set in a different thread via OnSPSUpdate()
                     //Check if we have been notified and want to go somewhere
+                    if (!upToDate)
+                        tryMove();
                     if (_goToSP != null)
                     {
-                        if (_goToSP.EnqueueCustomer(this)) //Another customer might have ninja'd it
+                        lock (this)
                         {
-                            //Change to SP Queue
-                            lock (Store.Get().MainQueue)
+                            if (_goToSP.EnqueueCustomer(this)) //Another customer might have ninja'd it
                             {
-                                Store.Get().MainQueue.Dequeue();
-                                Store.Get().SPS.UnregisterObserver(this);
+                                //Change to SP Queue
+                                lock (Store.Get().MainQueue)
+                                {
+                                    Store.Get().MainQueue.Dequeue();
+                                    Store.Get().SPS.UnregisterObserver(this);
+                                }
+                                state = CustomerState.ServicePointQueue;
                             }
-                            state = CustomerState.ServicePointQueue;
+                            _goToSP = null;
                         }
-                        _goToSP = null;
                     }
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
                     break;
@@ -179,10 +184,16 @@ namespace StoreSim
             }
             return favorite;
         }
-
+        bool upToDate = true;
         //Observer Pattern, Watches SPS
         public void OnSPSUpdate()
         {
+            upToDate = false;
+        }
+
+        public void tryMove()
+        {
+            upToDate = true;
             List<ServicePoint> sp = Store.Get().SPS.GetAvailableSP();
             ServicePoint s = _selectFavoriteSP(sp);
             if (s != null)
