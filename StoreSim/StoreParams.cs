@@ -61,7 +61,23 @@ namespace StoreSim
         public int RandomItemMin { get; set; }
 
         public int RandomItemMax { get; set; }
-        
+
+        public void reflectionSet(string name, string value)
+        {
+            int intval;
+            float floatval;
+            if (value.ToLower().Equals("true"))
+                this.GetType().GetProperty(name).SetValue(this, true, null);
+            else if (value.ToLower().Equals("false"))
+                this.GetType().GetProperty(name).SetValue(this, false, null);
+            else if (int.TryParse(value, out intval))
+                this.GetType().GetProperty(name).SetValue(this, intval, null);
+            else if (float.TryParse(value, out floatval))
+                this.GetType().GetProperty(name).SetValue(this, floatval, null);
+            else
+                this.GetType().GetProperty(name).SetValue(this, value, null);
+        }
+
         public static StoreParams createFromSettings(string settings)
         {
             //do awesome things with reflection
@@ -75,20 +91,7 @@ namespace StoreSim
                 string value = clause.Substring(clause.IndexOf("=") + 1);
                 if (key.Equals("") || value.Equals(""))
                     continue;
-                int intval;
-                float floatval;
-                if (value.ToLower().Equals("true"))
-                    sp.GetType().GetProperty(key).SetValue(sp, true, null);
-                else if (value.ToLower().Equals("false"))
-                    sp.GetType().GetProperty(key).SetValue(sp, false, null);
-                else if (int.TryParse(value, out intval))
-                    sp.GetType().GetProperty(key).SetValue(sp, intval, null);
-                else if (float.TryParse(value, out floatval))
-                    sp.GetType().GetProperty(key).SetValue(sp, floatval, null);
-                else 
-                    sp.GetType().GetProperty(key).SetValue(sp, value, null);
-                
-                
+                sp.reflectionSet(key, value);
             }
             return sp;
         }

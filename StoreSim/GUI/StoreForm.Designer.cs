@@ -36,6 +36,8 @@
             this.iniLabel = new System.Windows.Forms.Label();
             this.simDetails = new System.Windows.Forms.Button();
             this.iniDetails = new System.Windows.Forms.Button();
+            this.saveLog = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -114,11 +116,22 @@
             this.iniDetails.UseVisualStyleBackColor = true;
             this.iniDetails.Click += new System.EventHandler(this.iniDetails_Click);
             // 
+            // saveLog
+            // 
+            this.saveLog.Location = new System.Drawing.Point(95, 227);
+            this.saveLog.Name = "saveLog";
+            this.saveLog.Size = new System.Drawing.Size(75, 23);
+            this.saveLog.TabIndex = 7;
+            this.saveLog.Text = "Save Log";
+            this.saveLog.UseVisualStyleBackColor = true;
+            this.saveLog.Click += new System.EventHandler(this.saveLog_Click);
+            // 
             // StoreForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(331, 262);
+            this.Controls.Add(this.saveLog);
             this.Controls.Add(this.iniDetails);
             this.Controls.Add(this.simDetails);
             this.Controls.Add(this.iniLabel);
@@ -143,5 +156,7 @@
         private System.Windows.Forms.Label iniLabel;
         private System.Windows.Forms.Button simDetails;
         private System.Windows.Forms.Button iniDetails;
+        private System.Windows.Forms.Button saveLog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }

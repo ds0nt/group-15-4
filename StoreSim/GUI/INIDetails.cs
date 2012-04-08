@@ -13,6 +13,8 @@ namespace StoreSim.GUI
     {
         public StoreParams appliedSP = null;
         private StoreParams sp = null;
+        private List<TextBox> boxes = new List<TextBox>();
+
         public INIDetails(StoreParams sp)
         {
             this.sp = sp;
@@ -34,16 +36,27 @@ namespace StoreSim.GUI
                 box.Left = 170;
                 box.Top = i * height + 10;
                 this.Controls.Add(box);
+                boxes.Add(box);
                 ++i;
             }
             InitializeComponent();
-            this.Height = i * height + 40;
+            this.Height = i * height + 100;
             this.Width = 170 + 60 + 20;
+            ok.Top = cancel.Top = button1.Top = this.Height - 60;
         }
 
         private void INIDetails_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void applySP()
+        {
+            foreach (TextBox box in boxes)
+            {
+                sp.reflectionSet(box.Name, box.Text);
+            }
+            appliedSP = sp;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -53,7 +66,7 @@ namespace StoreSim.GUI
             DialogResult result = saveFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
-                appliedSP = sp;
+                applySP();
                 System.IO.Stream fs = saveFileDialog1.OpenFile();
                 bool success = Program.writeSettings(sp, fs);
                 fs.Close();
@@ -70,7 +83,7 @@ namespace StoreSim.GUI
 
         private void ok_Click(object sender, EventArgs e)
         {
-            appliedSP = sp;
+            applySP();
             this.Close();
         }
 
