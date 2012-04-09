@@ -30,12 +30,12 @@ namespace StoreSim
 
         public void Begin()
         {
-            Program.Debug("Manager is Created.");
+            //Program.Debug("Manager is Created.");
             while (true)
             {
-                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
+                //System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
                 ProcessSelf();
-                Program.Debug("Manager print this");
+                //Program.Debug("Manager print this");
             }
         }
 
@@ -51,10 +51,10 @@ namespace StoreSim
                     }
                     else //the case the store is already opened!
                     {                                           //*****************************************************
-                        if (Store.Get().CustomerPool.Count < 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
+                        //if (Store.Get().CustomerPool.Count < 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
                             state = ManagerState.ManagingCashier;//******************************************************** 
-                        else
-                            state = ManagerState.ClosingStore;
+                        //else
+                        //    state = ManagerState.ClosingStore;
                     }
                     break;
                 case ManagerState.TakingBreak:
@@ -65,6 +65,7 @@ namespace StoreSim
                     break;
                 case ManagerState.OpeningStore:
                     Store.Get().open = true;
+                    Program.Debug("Open up the Store");
                     //System.Threading.Thread.Sleep(100);
                     state = ManagerState.Thinking;
                     break;
