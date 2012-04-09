@@ -64,7 +64,7 @@ namespace StoreSim
             Thread.Sleep((int)(_delay / Store.Get().StoreParams.TimeScale));
             while (Store.Get().open == false)
             {
-                //Program.Debug("Customer #" + ID + " wants to get in but STORE IS CLOSED!!!!!!!!!!!!!!!");
+                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer * 5000);
             }
             Program.Debug("Customer #" + ID + " (wants " + itemList.Count + " items) -> Browsing Store");
             List<Customer> cp = Store.Get().CustomerPool;
@@ -76,6 +76,7 @@ namespace StoreSim
             }
             while (true)
             {
+                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer * 1000);
                 if (!ProcessSelf())
                     return;
             }
