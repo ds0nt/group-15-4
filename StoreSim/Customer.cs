@@ -241,5 +241,10 @@ namespace StoreSim
             c.delay = int.Parse(delaystr);
             return c;
         }
+
+        public static void resetCounter()
+        {
+            _lastId = 0;
+        }
     }
 }

@@ -128,9 +128,14 @@ namespace StoreSim
             return false;
         }
 
+
         public int GetNumberOfCustomers()
         {
             return _queue.Count;
+        }
+        public static void resetCounter()
+        {
+            _lastID = 0;
         }
     }
 }

@@ -54,9 +54,11 @@ namespace StoreSim
             myInstance = this;
 
             //Has references to SP and SPQueues
+            ServicePoint.resetCounter();
             _spm = new ServicePointSystem();
 
             //Main Customer Queue
+            Customer.resetCounter();
             _mainQueue = new Queue<Customer>();
 
             //customer pool
