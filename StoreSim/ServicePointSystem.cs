@@ -105,5 +105,21 @@ namespace StoreSim
             }
             return a;
         }
+
+        public List<ServicePoint> GetOpenedSP()
+        {
+            List<ServicePoint> a = new List<ServicePoint>();
+            lock (_spList)
+            {
+                foreach (ServicePoint s in _spList)
+                {
+                    if (s.Opened == true)
+                    {
+                        a.Add(s);
+                    }
+                }
+            }
+            return a;
+        }
     }
 }
