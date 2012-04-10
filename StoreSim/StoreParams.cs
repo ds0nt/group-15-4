@@ -8,6 +8,7 @@ namespace StoreSim
     class StoreParams
     {
         public bool ManagerPresent { get; set; }
+       
 
         public int MaximumServicePoints { get; set; } //C-01
         public int MinimumServicePoints { get; set; } //C-04

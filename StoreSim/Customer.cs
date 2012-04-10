@@ -107,7 +107,11 @@ namespace StoreSim
                         {
                             l.Enqueue(this);
                             Program.Debug("Customer #" + ID + " -> Main Queue in Pos " + l.Count);
+
                         }
+
+                        
+                        Program.Debug("" + Store.Get().SPS.GetAvailableSP().ElementAt(0).Opened);
                     }
                     break;
                 case CustomerState.MainQueue:
@@ -151,6 +155,7 @@ namespace StoreSim
                     //Waiting in Line... Waiting in Line... Items Scanning... ladedaa.
                     //This will be broken by the ServicePoint Telling us to get out of the line
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
+                    state = CustomerState.Exiting;
                     break;
 
                 case CustomerState.Exiting:

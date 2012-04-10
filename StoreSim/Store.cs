@@ -49,7 +49,6 @@ namespace StoreSim
             //Store params are the C-01 - C-12 variables
             _storeParams = sp;
 
-            open = false;
             //Singleton Instance
             myInstance = this;
 
@@ -65,7 +64,14 @@ namespace StoreSim
             _customerPool = new List<Customer>();
 
             //Manager
-            _manager = new Manager();
+            if (StoreParams.ManagerPresent == true)
+            {
+                open = false;
+                _manager = new Manager();
+
+            }
+            else
+                open = true;
         }
 
         //Gets Singleton Instance of this class
