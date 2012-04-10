@@ -30,10 +30,10 @@ namespace StoreSim
 
         public void Begin()
         {
-            Program.Debug("Manager is Created.");
+            //Program.Debug("Manager is Created.");
             while (true)
             {
-                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
+                //System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
                 ProcessSelf();
                 //Program.Debug("Manager print this");
             }
@@ -41,6 +41,7 @@ namespace StoreSim
 
         public void ProcessSelf()
         {
+            System.Threading.Thread.Sleep(10);
             switch (state)
             {
                 case ManagerState.Thinking:
@@ -51,16 +52,16 @@ namespace StoreSim
                     }
                     else //the case the store is already opened!
                     {                                           //*****************************************************
-                        //if (Store.Get().CustomerPool.Count < 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
+                        if (Store.Get().CustomerPool.Count < 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
                             state = ManagerState.ManagingCashier;//******************************************************** 
-                        //else
-                        //    state = ManagerState.ClosingStore;
+                        else
+                            state = ManagerState.ClosingStore;
                     }
                     break;
                 case ManagerState.TakingBreak:
                     //Wait for Finding Item
                     Program.Debug("MANAGER IS TAKING REST!!!");
-                    System.Threading.Thread.Sleep(0); ///////////////////////////////////
+                    System.Threading.Thread.Sleep(5000); ///////////////////////////////////
                     state = ManagerState.Thinking;
                     break;
                 case ManagerState.OpeningStore:
@@ -78,8 +79,7 @@ namespace StoreSim
                     state = ManagerState.TakingBreak;
                     break;
                 case ManagerState.ManagingCashier:
-                    //AdjustNumberOfCashier();
-                    //Program.Debug("Is this printed???????????????????????????????????");
+                    AdjustNumberOfCashier();
                     state = ManagerState.Thinking;
                     break;
                 
@@ -94,30 +94,26 @@ namespace StoreSim
 
         public void AdjustNumberOfCashier()
         {
-            //Program.Debug("Is this printed??");
             List<ServicePoint> sp = Store.Get().SPS.GetServicePoints();//get all the available SPs.
 
-            if (_needToAdjust(sp) == "increase") //&& Store.Get().SPS.GetAvailableSP().Count < Store.Get().StoreParams.MaximumServicePoints)
+            if (_needToAdjust(sp) == "increase" && Store.Get().SPS.GetOpenedSP().Count < Store.Get().StoreParams.MaximumServicePoints)
             {
-                Program.Debug("Is this printed??");
-                /*for (int i = 0; i < sp.Count; i++)
+                for (int i = 0; i < sp.Count; i++)
                 {
-                    if (sp.ElementAt(i).Opened == false)
+                    if (Store.Get().SPS.GetServicePoints().ElementAt(i).Opened == false)
                     {
                         lock (Store.Get().SPS)
                         {
-                            Program.Debug("*******************************************CASHIER Opened **");
-                            Store.Get().SPS.OpenServicePoint(sp.ElementAt(i));//sp.ElementAt(i).Start();
+                            //Program.Debug("************************************************CASHIER ++ **********");
+                            Store.Get().SPS.OpenServicePoint(Store.Get().SPS.GetServicePoints().ElementAt(i));
                         }
                         break;
                     }
-                }*/
-                    
+                }
+                
             }
-            else if(_needToAdjust(sp) == "decrease" )//&& sp.Count > Store.Get().StoreParams.MinimumServicePoints)
+            else if(_needToAdjust(sp) == "decrease" && Store.Get().SPS.GetOpenedSP().Count > Store.Get().StoreParams.MinimumServicePoints)
             {
-                Program.Debug("WTF!?");
-                /*
                 ServicePoint leastAmountCashier = null;
            
                 //look for the least amount
@@ -136,30 +132,27 @@ namespace StoreSim
                 if (leastAmountCashier != null)
                 {
                     Store.Get().SPS.CloseServicePoint(leastAmountCashier);
-                    Program.Debug("----------------------------        Cachier Closed!");
+                    //Program.Debug("----------------------------        Cachier KILLLLLLLLLED!");
                 }
-                 */
 
             }
             else if (_needToAdjust(sp) == "nothing")
             {
-                //Program.Debug("FUCK????????");
                 //need to increase the stress point by 1.
-                 
             }
         }
 
         public string _needToAdjust(List<ServicePoint> servicePoints)
         {
 
-            if (Store.Get().MainQueue.Count > 1) /////////////////////////////*************************************Add value here!!
+            if (Store.Get().MainQueue.Count > 4) /////////////////////////////*************************************Add value here!!
             {
-                //additionalCashier++;
+                additionalCashier++;
                 return "increase"; ////////////////////////////////////2 is wrong****************************************
             }
-            else if (Store.Get().MainQueue.Count < 4 && Store.Get().StoreParams.MinimumServicePoints == Store.Get().SPS.GetAvailableSP().Count)
+            else if (Store.Get().MainQueue.Count < 4)
             {
-                //additionalCashier--;
+                additionalCashier--;
                 return "decrease";
             }
             else
