@@ -66,13 +66,13 @@ namespace StoreSim
             {
                 System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer * 5000);
             }
-            //Program.Debug("Customer #" + ID + " (wants " + itemList.Count + " items) -> Browsing Store");
+            Program.Debug("Customer #" + ID + " (wants " + itemList.Count + " items) -> Browsing Store");
             List<Customer> cp = Store.Get().CustomerPool;
             lock (cp)
             {
                 if (cp.Contains(this) == false)
                     cp.Add(this);
-                //Program.Debug("customer in store count = " + cp.Count);
+                Program.Debug("customer in store count = " + cp.Count);
             }
             while (true)
             {
@@ -106,7 +106,7 @@ namespace StoreSim
                         lock (l)
                         {
                             l.Enqueue(this);
-                            //Program.Debug("Customer #" + ID + " -> Main Queue in Pos " + l.Count);
+                            Program.Debug("Customer #" + ID + " -> Main Queue in Pos " + l.Count);
                         }
                     }
                     break;
@@ -155,14 +155,14 @@ namespace StoreSim
 
                 case CustomerState.Exiting:
                     //Bye Bye Store
-                    //Program.Debug("Customer #" + ID + " -> Finished Paying");
+                    Program.Debug("Customer #" + ID + " -> Finished Paying");
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToExitStore);
                     lock (Store.Get().CustomerPool)
                     {
                         Store.Get().CustomerPool.Remove(this);
                     }
-                    //Program.Debug("Customer #" + ID + " -> Exited Store");
-                    //Program.Debug("customer in store count = " + Store.Get().CustomerPool.Count);
+                    Program.Debug("Customer #" + ID + " -> Exited Store");
+                    Program.Debug("customer in store count = " + Store.Get().CustomerPool.Count);
                     return false;
              }
             return true;

@@ -28,7 +28,7 @@ namespace StoreSim
             _observers = new List<iSPObserver>();
             _queue = new Queue<Customer>();
 
-            //Program.Debug("Service Point #" + ID + " -> Created");
+            Program.Debug("Service Point #" + ID + " -> Created");
         }
 
         //Thread Begin
@@ -40,7 +40,7 @@ namespace StoreSim
         //Thread Loop
         public void Open()
         {
-            //Program.Debug("Service Point #" + ID + " -> Opened");
+            Program.Debug("Service Point #" + ID + " -> Opened");
             _opened = true;
 
             Customer servee = null;
@@ -117,7 +117,7 @@ namespace StoreSim
                 lock (this)
                 {
                     _queue.Enqueue(c);
-                    //Program.Debug("Customer #" + c.ID + " -> SP #" + ID);
+                    Program.Debug("Customer #" + c.ID + " -> SP #" + ID);
                 }
                 _notify();
                 return true;

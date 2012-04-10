@@ -45,7 +45,7 @@ namespace StoreSim
         #region Constructor
         public Store(StoreParams sp)
         {
-            //Program.Debug("Creating Store...");
+            Program.Debug("Creating Store...");
             //Store params are the C-01 - C-12 variables
             _storeParams = sp;
 
