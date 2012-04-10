@@ -85,7 +85,10 @@ namespace StoreSim.GUI
             SimDetails iniForm = new SimDetails(simCustomers);
             DialogResult res = iniForm.ShowDialog(this);
             if (iniForm.appliedsimCustomers != null)
+            {
                 simCustomers = iniForm.appliedsimCustomers;
+                simLabel.Text = simCustomers.Length + " Customers Loaded";
+            }
         }
 
         private void iniDetails_Click(object sender, EventArgs e)
