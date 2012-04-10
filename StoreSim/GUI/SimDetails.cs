@@ -24,10 +24,14 @@ namespace StoreSim.GUI
         {
             DataTable dt = new DataTable();
             dt.Columns.Add("Items");
+            dt.Columns.Add("Stat");
             dt.Columns.Add("Delay");
             for (int i = 0; i < simCustomers.Length; i++)
             {
-                dt.Rows.Add(simCustomers[i].items.ToString(), simCustomers[i].delay.ToString());
+                dt.Rows.Add(
+                    simCustomers[i].items.ToString(),
+                    "",//simCustomers[i].stat.ToString(),
+                    simCustomers[i].delay.ToString());
             }
             dataGridView1.DataSource = dt;
         }
@@ -41,7 +45,8 @@ namespace StoreSim.GUI
             for(int i = 0; i < simCustomers.Length; i++)
             {
                 simCustomers[i].items = int.Parse((string)dt.Rows[i][0]);
-                simCustomers[i].delay = int.Parse((string)dt.Rows[i][1]);
+               // simCustomers[i].stat = int.Parse((string)dt.Rows[i][1]);
+                simCustomers[i].delay = int.Parse((string)dt.Rows[i][2]);
             }
             appliedsimCustomers = simCustomers;
         }

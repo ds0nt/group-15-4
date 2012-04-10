@@ -133,20 +133,17 @@ namespace StoreSim
                         tryMove();
                     if (_goToSP != null)
                     {
-                        lock (this)
+                        if (_goToSP.EnqueueCustomer(this)) //Another customer might have ninja'd it
                         {
-                            if (_goToSP.EnqueueCustomer(this)) //Another customer might have ninja'd it
+                            //Change to SP Queue
+                            lock (Store.Get().MainQueue)
                             {
-                                //Change to SP Queue
-                                lock (Store.Get().MainQueue)
-                                {
-                                    Store.Get().MainQueue.Dequeue();
-                                    Store.Get().SPS.UnregisterObserver(this);
-                                }
-                                state = CustomerState.ServicePointQueue;
+                                Store.Get().MainQueue.Dequeue();
+                                Store.Get().SPS.UnregisterObserver(this);
                             }
-                            _goToSP = null;
+                            state = CustomerState.ServicePointQueue;
                         }
+                        _goToSP = null;
                     }
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
                     break;
@@ -216,7 +213,9 @@ namespace StoreSim
         public void tryMove()
         {
             upToDate = true;
+
             List<ServicePoint> sp = Store.Get().SPS.GetAvailableSP();
+
             ServicePoint s = _selectFavoriteSP(sp);
             if (s != null)
             {

@@ -138,7 +138,8 @@ namespace StoreSim
                 StreamWriter f = new StreamWriter(stream);
                 foreach (Customer.CustomerStart cs in simCustomers)
                 {
-                    f.WriteLine(cs.items + ";" + cs.delay);
+                    f.WriteLine(cs.items + ";"// + cs.stat + ";"
+                        + cs.delay);
                 }
                 f.Flush();
                 return true;

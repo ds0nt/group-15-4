@@ -28,13 +28,10 @@ namespace StoreSim
                 ServicePoint s = new ServicePoint();
                 _spList.Add(s);
                 s.RegisterObserver(this);
-                //s.Start();
+                if (i < Store.Get().StoreParams.InitialServicePoints)
+                    s.Start();
             }
-            for (int i = 0; i < Store.Get().StoreParams.InitialServicePoints; i++) //#Andre
-            {
-                _spList.ElementAt(i).Start();
-                
-            }
+
             NotifyObservers();
         }
 
@@ -99,7 +96,7 @@ namespace StoreSim
             {
                 foreach (ServicePoint s in _spList)
                 {
-                    if(!s.IsFull())
+                    if (!s.IsFull() && s.Opened == true)
                         a.Add(s);
                 }
             }
