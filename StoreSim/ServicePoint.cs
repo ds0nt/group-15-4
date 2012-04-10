@@ -36,7 +36,9 @@ namespace StoreSim
         //Thread Begin
         public void Start()
         {
-            new Thread(new ThreadStart(this.Open)).Start();
+            Thread t = new Thread(new ThreadStart(this.Open));
+            //t.Priority = ThreadPriority.AboveNormal;
+            t.Start();
         }
         
         //Thread Loop
@@ -55,10 +57,15 @@ namespace StoreSim
                     while (servee.shoppingCart.Count > 0)
                     {
                         System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToScan);
-                        lock (servee)
+                        lock (servee.shoppingCart)
+                            lock(servee.purchasedItems)
                         {
-                            servee.purchasedItems.Add(servee.shoppingCart[0]);
-                            servee.shoppingCart.RemoveAt(0);
+                            //Lock makes it wait... this could change while we wait for lock
+                            if (servee.shoppingCart.Count > 0)
+                            {
+                                servee.purchasedItems.Add(servee.shoppingCart[0]);
+                                servee.shoppingCart.RemoveAt(0);
+                            }
                         }
                     }
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.TimeToPurchase);
@@ -73,7 +80,6 @@ namespace StoreSim
         public void Close()
         {
             _opened = false;
-
         }
 
         //count items in this queue, careful not to deadlock with customers calling this

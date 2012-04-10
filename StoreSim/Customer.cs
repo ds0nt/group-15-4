@@ -64,7 +64,7 @@ namespace StoreSim
             Thread.Sleep((int)(_delay / Store.Get().StoreParams.TimeScale));
             while (Store.Get().open == false)
             {
-                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer * 5000);
+                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
             }
             Program.Debug("Customer #" + ID + " (wants " + itemList.Count + " items) -> Browsing Store");
             List<Customer> cp = Store.Get().CustomerPool;
@@ -76,7 +76,7 @@ namespace StoreSim
             }
             while (true)
             {
-                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer * 1000);
+                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
                 if (!ProcessSelf())
                     return;
             }
@@ -150,7 +150,6 @@ namespace StoreSim
                     //Waiting in Line... Waiting in Line... Items Scanning... ladedaa.
                     //This will be broken by the ServicePoint Telling us to get out of the line
                     System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
-                    state = CustomerState.Exiting;
                     break;
 
                 case CustomerState.Exiting:

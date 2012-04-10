@@ -116,12 +116,18 @@ namespace StoreSim
         {
             try
             {
+                float timescale = sp.TimeScale;
+                sp.TimeScale = 1;
                 StreamWriter f = new StreamWriter(stream);
                 foreach (System.Reflection.PropertyInfo pi in sp.GetType().GetProperties())
                 {
-                    f.Write(pi.Name + " = " + pi.GetValue(sp, null) + ";\n\r");
+                    if(pi.Name == "TimeScale")
+                        f.WriteLine(pi.Name + " = " + timescale + ";");
+                    else
+                        f.WriteLine(pi.Name + " = " + pi.GetValue(sp, null) + ";");
                 }
                 f.Flush();
+                sp.TimeScale = timescale;
                 return true;
             }
             catch (Exception e)

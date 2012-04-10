@@ -22,10 +22,12 @@ namespace StoreSim
         public Manager()
         {
             additionalCashier = 0;
-            state = ManagerState.OpeningStore;
+            state = ManagerState.Thinking;
             //maxNumberCashier = Store.Get().StoreParams.MaximumServicePoints;
             Store.Get().SPS.RegisterObserver(this); //Manager needs to be registerd here too!!
-            new Thread(new ThreadStart(this.Begin)).Start();
+            Thread t = new Thread(new ThreadStart(this.Begin));
+            //t.Priority = ThreadPriority.AboveNormal;
+            t.Start();
         }
 
         public void Begin()
@@ -52,14 +54,14 @@ namespace StoreSim
                     }
                     else //the case the store is already opened!
                     {
-                        if (Store.Get().CustomerPool.Count > 5)
-                        {
+                        //if (Store.Get().CustomerPool.Count > 5)
+                        //{
                             state = ManagerState.ManagingCashier;
-                        }
-                        else if (Store.Get().CustomerPool.Count == 0)
-                        {
-                            state = ManagerState.ClosingStore;
-                        }
+                        //}
+                        //else if (Store.Get().CustomerPool.Count == 0)
+                        //{
+                        //    state = ManagerState.ClosingStore;
+                        //}
                     }
                     break;
                 case ManagerState.TakingBreak:
@@ -77,19 +79,21 @@ namespace StoreSim
                 case ManagerState.OpeningStore:
                     Store.Get().open = true;
                     Program.Debug("Open up the Store");
-                    //System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(100);
                     state = ManagerState.Thinking;
                     break;
                 case ManagerState.ClosingStore:
                     //need to get rid of all of the customers. NOOOOOOOOOOOOOOOOOOOOOOOOO
                     //need to not receive any more customers!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    Store.Get().open = false;
-                    Program.Debug("Store Closed");
-                    System.Threading.Thread.Sleep(15000); //sleep 50 sec
-                    state = ManagerState.TakingBreak;
+                   // Store.Get().open = false;
+                   // Program.Debug("Store Closed");
+                   // System.Threading.Thread.Sleep(15000); //sleep 50 sec
+                    // state = ManagerState.TakingBreak;
+                    state = ManagerState.Thinking;
                     break;
                 case ManagerState.ManagingCashier:
                     AdjustNumberOfCashier();
+                    System.Threading.Thread.Sleep(Store.Get().StoreParams.ManagerBreakTime); 
                     state = ManagerState.Thinking;
                     break;
                 
@@ -114,7 +118,7 @@ namespace StoreSim
                     {
                         lock (Store.Get().SPS)
                         {
-                            //Program.Debug("************************************************CASHIER ++ **********");
+                            Program.Debug("Manager -> Opening Cashier #" + i);
                             Store.Get().SPS.OpenServicePoint(Store.Get().SPS.GetServicePoints().ElementAt(i));
                         }
                         break;
@@ -125,24 +129,19 @@ namespace StoreSim
             else if (adjustState.Equals("decrease") && Store.Get().SPS.GetOpenedSP().Count > Store.Get().StoreParams.MinimumServicePoints)
             {
                 ServicePoint leastAmountCashier = null;
-           
                 //look for the least amount
                 for (int i = 0; i < sp.Count; i++)
                 {
-                    if (i == 0)
-                        leastAmountCashier = sp.ElementAt(0);
-                    else
+                    if (sp.ElementAt(i).Opened)
                     {
-                        if (sp.ElementAt(i - 1).GetNumberOfCustomers() > sp.ElementAt(i).GetNumberOfCustomers())
+                        if (leastAmountCashier == null || leastAmountCashier.GetNumberOfCustomers() < sp.ElementAt(i).GetNumberOfCustomers())
                             leastAmountCashier = sp.ElementAt(i);
-                        else
-                            leastAmountCashier = sp.ElementAt(i - 1);
                     }
                 }
                 if (leastAmountCashier != null)
                 {
+                    Program.Debug("Manager -> Closing Cashier #" +leastAmountCashier.ID);
                     Store.Get().SPS.CloseServicePoint(leastAmountCashier);
-                    //Program.Debug("----------------------------        Cachier KILLLLLLLLLED!");
                 }
 
             }

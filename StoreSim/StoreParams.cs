@@ -40,11 +40,10 @@ namespace StoreSim
             set { _timeToExitStore = value; }
         }
 
-        private int _reactionTimeSP;
-        public int ReactionTimeSP 
+        public int ReactionTimeSP
         {
-            get { return (int)(_reactionTimeSP / TimeScale); }
-            set { _reactionTimeSP = value; } 
+            get;
+            set;
         }
         private int _timeToBrowsePerItem;
         public int TimeToBrowsePerItem 
@@ -53,10 +52,10 @@ namespace StoreSim
             set { _timeToBrowsePerItem = value; } 
         }
         
-        private int _reactionTimeCustomer;
-        public int ReactionTimeCustomer {
-            get { return (int)(_reactionTimeCustomer / TimeScale); }
-            set { _reactionTimeCustomer = value; } 
+        public int ReactionTimeCustomer
+        {
+            get;
+            set;
         }
 
         public bool RandomItemGeneration { get; set; }
