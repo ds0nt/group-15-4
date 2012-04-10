@@ -30,10 +30,10 @@ namespace StoreSim
 
         public void Begin()
         {
-            //Program.Debug("Manager is Created.");
+            Program.Debug("Manager is Created.");
             while (true)
             {
-                //System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
+                System.Threading.Thread.Sleep(Store.Get().StoreParams.ReactionTimeCustomer);
                 ProcessSelf();
                 //Program.Debug("Manager print this");
             }
@@ -60,7 +60,7 @@ namespace StoreSim
                 case ManagerState.TakingBreak:
                     //Wait for Finding Item
                     Program.Debug("MANAGER IS TAKING REST!!!");
-                    System.Threading.Thread.Sleep(5000); ///////////////////////////////////
+                    System.Threading.Thread.Sleep(0); ///////////////////////////////////
                     state = ManagerState.Thinking;
                     break;
                 case ManagerState.OpeningStore:
@@ -78,7 +78,8 @@ namespace StoreSim
                     state = ManagerState.TakingBreak;
                     break;
                 case ManagerState.ManagingCashier:
-                    AdjustNumberOfCashier();
+                    //AdjustNumberOfCashier();
+                    //Program.Debug("Is this printed???????????????????????????????????");
                     state = ManagerState.Thinking;
                     break;
                 
@@ -93,18 +94,30 @@ namespace StoreSim
 
         public void AdjustNumberOfCashier()
         {
+            //Program.Debug("Is this printed??");
             List<ServicePoint> sp = Store.Get().SPS.GetServicePoints();//get all the available SPs.
 
-            if (_needToAdjust(sp) == "increase" && sp.Count < Store.Get().StoreParams.MaximumServicePoints)
+            if (_needToAdjust(sp) == "increase") //&& Store.Get().SPS.GetAvailableSP().Count < Store.Get().StoreParams.MaximumServicePoints)
             {
-                lock (Store.Get().SPS)
+                Program.Debug("Is this printed??");
+                /*for (int i = 0; i < sp.Count; i++)
                 {
-                Program.Debug("************************************************CASHIER ++ **********");
-                Store.Get().SPS.AddServicePoint();
-                }
+                    if (sp.ElementAt(i).Opened == false)
+                    {
+                        lock (Store.Get().SPS)
+                        {
+                            Program.Debug("*******************************************CASHIER Opened **");
+                            Store.Get().SPS.OpenServicePoint(sp.ElementAt(i));//sp.ElementAt(i).Start();
+                        }
+                        break;
+                    }
+                }*/
+                    
             }
-            else if(_needToAdjust(sp) == "decrease" && sp.Count > Store.Get().StoreParams.MinimumServicePoints)
+            else if(_needToAdjust(sp) == "decrease" )//&& sp.Count > Store.Get().StoreParams.MinimumServicePoints)
             {
+                Program.Debug("WTF!?");
+                /*
                 ServicePoint leastAmountCashier = null;
            
                 //look for the least amount
@@ -123,27 +136,30 @@ namespace StoreSim
                 if (leastAmountCashier != null)
                 {
                     Store.Get().SPS.CloseServicePoint(leastAmountCashier);
-                    Program.Debug("----------------------------        Cachier KILLLLLLLLLED!");
+                    Program.Debug("----------------------------        Cachier Closed!");
                 }
+                 */
 
             }
             else if (_needToAdjust(sp) == "nothing")
             {
+                //Program.Debug("FUCK????????");
                 //need to increase the stress point by 1.
+                 
             }
         }
 
         public string _needToAdjust(List<ServicePoint> servicePoints)
         {
 
-            if (Store.Get().MainQueue.Count > 4) /////////////////////////////*************************************Add value here!!
+            if (Store.Get().MainQueue.Count > 1) /////////////////////////////*************************************Add value here!!
             {
-                additionalCashier++;
+                //additionalCashier++;
                 return "increase"; ////////////////////////////////////2 is wrong****************************************
             }
-            else if (Store.Get().MainQueue.Count < 4)
+            else if (Store.Get().MainQueue.Count < 4 && Store.Get().StoreParams.MinimumServicePoints == Store.Get().SPS.GetAvailableSP().Count)
             {
-                additionalCashier--;
+                //additionalCashier--;
                 return "decrease";
             }
             else

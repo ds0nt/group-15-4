@@ -10,6 +10,7 @@ namespace StoreSim
     {
         private List<ServicePoint> _spList;
         private List<iSPSObserver> _observers;
+        //int initCount; //#Andre -- count for open init
 
         public List<ServicePoint> GetServicePoints()
         {
@@ -22,13 +23,19 @@ namespace StoreSim
             _observers = new List<iSPSObserver>();
             _spList = new List<ServicePoint>();
 
-            for (int i = 0; i < Store.Get().StoreParams.InitialServicePoints; i++)
+            for (int i = 0; i < Store.Get().StoreParams.MaximumServicePoints; i++) //#ANDRE
             {
                 ServicePoint s = new ServicePoint();
                 _spList.Add(s);
                 s.RegisterObserver(this);
-                s.Start();
+                //s.Start();
             }
+            for (int i = 0; i < Store.Get().StoreParams.InitialServicePoints; i++) //#Andre
+            {
+                _spList.ElementAt(i).Start();
+                
+            }
+            NotifyObservers();
         }
 
         public void RegisterObserver(iSPSObserver observer)
@@ -55,11 +62,16 @@ namespace StoreSim
             s.Start();
             NotifyObservers();
         }
+        public void OpenServicePoint(ServicePoint p)
+        {
+            p.Start();
+            NotifyObservers();
+        }
 
         public void CloseServicePoint(ServicePoint p)
         {
             p.Close();
-            _spList.Remove(p);
+            //_spList.Remove(p);
             NotifyObservers();
         }
 

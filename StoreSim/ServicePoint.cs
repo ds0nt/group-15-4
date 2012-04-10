@@ -28,7 +28,9 @@ namespace StoreSim
             _observers = new List<iSPObserver>();
             _queue = new Queue<Customer>();
 
-            Program.Debug("Service Point #" + ID + " -> Created");
+
+            Program.Debug("Service Point #" + ID + " -> Created, Opened: " + _opened);  //#Andre -- The service point is created!! It's closed
+
         }
 
         //Thread Begin
@@ -71,6 +73,7 @@ namespace StoreSim
         public void Close()
         {
             _opened = false;
+
         }
 
         //count items in this queue, careful not to deadlock with customers calling this
