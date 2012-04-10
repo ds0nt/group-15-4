@@ -29,6 +29,7 @@ namespace StoreSim.GUI
         {
             openFileDialog.DefaultExt = "sim";
 
+            openFileDialog.Filter = "Simulation Input|*.txt";
             DialogResult result = openFileDialog.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
@@ -51,6 +52,7 @@ namespace StoreSim.GUI
         private void openINI_Click(object sender, EventArgs e)
         {
             openFileDialog.DefaultExt = "ini";
+            openFileDialog.Filter = "Simulation Settings|*.ini";
 
             DialogResult result = openFileDialog.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
@@ -94,6 +96,7 @@ namespace StoreSim.GUI
         private void iniDetails_Click(object sender, EventArgs e)
         {
             INIDetails iniForm = new INIDetails(sp);
+
             DialogResult res = iniForm.ShowDialog(this);
             if (iniForm.appliedSP != null)
                 sp = iniForm.appliedSP;
@@ -103,6 +106,7 @@ namespace StoreSim.GUI
         {
             saveFileDialog1.DefaultExt = "ini";
 
+            saveFileDialog1.Filter = "Log File|*.txt";
             DialogResult result = saveFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {

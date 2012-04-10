@@ -63,6 +63,7 @@ namespace StoreSim.GUI
         {
             saveFileDialog1.DefaultExt = "ini";
 
+            saveFileDialog1.Filter = "Simulation Settings|*.ini";
             DialogResult result = saveFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {

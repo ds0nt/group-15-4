@@ -22,7 +22,7 @@ namespace StoreSim
         public Manager()
         {
             additionalCashier = 0;
-            state = ManagerState.TakingBreak;
+            state = ManagerState.OpeningStore;
             //maxNumberCashier = Store.Get().StoreParams.MaximumServicePoints;
             Store.Get().SPS.RegisterObserver(this); //Manager needs to be registerd here too!!
             new Thread(new ThreadStart(this.Begin)).Start();
@@ -51,17 +51,27 @@ namespace StoreSim
                         state = ManagerState.OpeningStore;
                     }
                     else //the case the store is already opened!
-                    {                                           //*****************************************************
-                        if (Store.Get().CustomerPool.Count < 5) //////////////////////////////////////FIX THIS!!!!!!!!!!!!!!!!!
-                            state = ManagerState.ManagingCashier;//******************************************************** 
-                        else
+                    {
+                        if (Store.Get().CustomerPool.Count > 5)
+                        {
+                            state = ManagerState.ManagingCashier;
+                        }
+                        else if (Store.Get().CustomerPool.Count == 0)
+                        {
                             state = ManagerState.ClosingStore;
+                        }
                     }
                     break;
                 case ManagerState.TakingBreak:
+                    if (!Store.Get().StoreParams.ManagerCanBreak)
+                    {
+                        state = ManagerState.Thinking;
+                        break;
+                    }
                     //Wait for Finding Item
-                    Program.Debug("MANAGER IS TAKING REST!!!");
-                    System.Threading.Thread.Sleep(5000); ///////////////////////////////////
+                    Program.Debug("Manager -> Breaking!!!");
+                    System.Threading.Thread.Sleep(Store.Get().StoreParams.ManagerBreakTime); ///////////////////////////////////
+                    Program.Debug("Manager -> Not Breaking!!!");
                     state = ManagerState.Thinking;
                     break;
                 case ManagerState.OpeningStore:
@@ -95,8 +105,8 @@ namespace StoreSim
         public void AdjustNumberOfCashier()
         {
             List<ServicePoint> sp = Store.Get().SPS.GetServicePoints();//get all the available SPs.
-
-            if (_needToAdjust(sp) == "increase" && Store.Get().SPS.GetOpenedSP().Count < Store.Get().StoreParams.MaximumServicePoints)
+            string adjustState = _needToAdjust(sp);
+            if (adjustState.Equals("increase") && Store.Get().SPS.GetOpenedSP().Count < Store.Get().StoreParams.MaximumServicePoints)
             {
                 for (int i = 0; i < sp.Count; i++)
                 {
@@ -112,7 +122,7 @@ namespace StoreSim
                 }
                 
             }
-            else if(_needToAdjust(sp) == "decrease" && Store.Get().SPS.GetOpenedSP().Count > Store.Get().StoreParams.MinimumServicePoints)
+            else if (adjustState.Equals("decrease") && Store.Get().SPS.GetOpenedSP().Count > Store.Get().StoreParams.MinimumServicePoints)
             {
                 ServicePoint leastAmountCashier = null;
            
@@ -136,7 +146,7 @@ namespace StoreSim
                 }
 
             }
-            else if (_needToAdjust(sp) == "nothing")
+            else if (adjustState.Equals("nothing"))
             {
                 //need to increase the stress point by 1.
             }
@@ -144,15 +154,13 @@ namespace StoreSim
 
         public string _needToAdjust(List<ServicePoint> servicePoints)
         {
-
-            if (Store.Get().MainQueue.Count > 4) /////////////////////////////*************************************Add value here!!
+            int count = Store.Get().MainQueue.Count;
+            if (count > 4) /////////////////////////////*************************************Add value here!!
             {
-                additionalCashier++;
                 return "increase"; ////////////////////////////////////2 is wrong****************************************
             }
-            else if (Store.Get().MainQueue.Count < 4)
+            else if (count < 4)
             {
-                additionalCashier--;
                 return "decrease";
             }
             else

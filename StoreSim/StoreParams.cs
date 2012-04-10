@@ -98,5 +98,15 @@ namespace StoreSim
             }
             return sp;
         }
+
+        public bool ManagerCanBreak { get; set; }
+
+
+        private int _managerBreakTime;
+        public int ManagerBreakTime
+        {
+            get { return (int)(_managerBreakTime / TimeScale); }
+            set { _managerBreakTime = value; }
+        }
     }
 }

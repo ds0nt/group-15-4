@@ -110,8 +110,6 @@ namespace StoreSim
 
                         }
 
-                        
-                        Program.Debug("" + Store.Get().SPS.GetAvailableSP().ElementAt(0).Opened);
                     }
                     break;
                 case CustomerState.MainQueue:

@@ -54,6 +54,7 @@ namespace StoreSim.GUI
         private void save_Click(object sender, EventArgs e)
         {
             saveFileDialog1.DefaultExt = "ini";
+            saveFileDialog1.Filter = "Simulation Input|*.txt";
 
             DialogResult result = saveFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
